@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Iglesia Adventista Las Piedras</title>
 <meta name="description" content="Iglesia Adventista del Séptimo Día en Las Piedras, Puerto Rico. Horarios, cómo llegar y servicios en vivo.">
-<meta name="theme-color" content="#eeeff0" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#18191b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1a26" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Iglesia Adventista Las Piedras">
 <meta property="og:description" content="Horarios, cómo llegar y servicios en vivo.">
@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wdth,wght@62.5..100,400..800&display=swap">
 <link rel="stylesheet" href="/styles.css">
 <script src="/app.js" defer></script>
 </head>
@@ -61,21 +61,22 @@
 </header>
 
 <main id="main">
+  <!-- Creation scheme (identity manual): 7 equal columns. Columns 1–6 carry the content;
+       the 7th, the Sabbath column, is set apart: background + the plain symbol only, never text. -->
   <section class="hero" id="inicio">
-    <div class="wrap">
-      <h1 class="name"><span class="name-a">Iglesia Adventista</span> <span class="name-b">Las Piedras</span></h1>
-      <div class="hero-row">
+    <div class="wrap creation">
+      <div class="hero-text">
+        <h1 class="name"><span class="name-a">Iglesia Adventista</span> <span class="name-b">del Séptimo Día</span> <span class="name-c">Las Piedras</span></h1>
         <p class="lead" data-i18n="hero.lead">Cada sábado nos reunimos para estudiar la Biblia, adorar y compartir. Ven en persona o acompáñanos en vivo desde donde estés.</p>
         <div class="actions">
           <a class="btn primary" href="#visitanos" data-i18n="hero.visit">Cómo llegar</a>
           <a class="btn" href="#horarios" data-i18n="hero.times">Ver horarios</a>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section class="live" id="envivo" data-i18n-label="live.label" aria-label="Transmisión en vivo">
-    <div class="wrap">
+      <div class="sabbath" aria-hidden="true"><span class="sabbath-mark"></span></div>
+
+      <div class="hero-live" id="envivo" role="region" data-i18n-label="live.label" aria-label="Transmisión en vivo">
       <div class="player" id="player">
         <img class="player-bg" id="player-bg" alt="" hidden>
         <div class="player-ui">
@@ -93,6 +94,7 @@
           <a class="text-link" id="yt-live" href="#" target="_blank" rel="noopener" data-i18n="live.open">Abrir en YouTube</a>
           <a class="text-link" id="yt-sub" href="#" target="_blank" rel="noopener" data-i18n="live.sub">Suscribirse al canal</a>
         </div>
+      </div>
       </div>
     </div>
   </section>

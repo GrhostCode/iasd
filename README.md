@@ -16,6 +16,16 @@ src/feed.js            Lee el feed público del canal (no hace falta clave de AP
 wrangler.jsonc         Configuración de Cloudflare
 ```
 
+## Identidad visual
+
+Sigue el manual de identidad adventista de la División Interamericana (2022):
+
+- **Colores:** Denim `#2f557f` (Pantone 302) como color principal; Warm `#ffa92d` y Ming `#3e8391` como secundarios.
+- **Tipografía:** Noto Sans. Advent Sans es solo para el logo oficial.
+- **Esquema de la Creación:** el inicio usa 7 columnas iguales; la 7.ª (la columna del sábado) lleva solo el fondo y el símbolo, nunca texto ni el símbolo circular.
+- **Símbolo:** un solo color sólido (Denim, negro o blanco al 100 %), sin efectos. Junto al nombre va la versión normal; sola (favicon) va la circular.
+- El símbolo actual (`public/img/logo-mark.png`) se sacó de una captura. Cuando tengan el archivo oficial, reemplázalo por ese (fondo transparente, símbolo en blanco).
+
 ## Cambiar datos
 
 Todo está arriba de `public/app.js`, en el objeto `SITE`:

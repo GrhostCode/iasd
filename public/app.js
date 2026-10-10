@@ -220,6 +220,7 @@
     $("play-live").addEventListener("click", function () {
       var p = $("player");
       p.textContent = "";
+      p.classList.add("playing"); // removes the overlay so taps reach the YouTube player
       p.appendChild(frame("https://www.youtube.com/embed/live_stream?channel=" + SITE.channelId + "&autoplay=1", L("live.label")));
     });
     $("play-latest").addEventListener("click", function () {
