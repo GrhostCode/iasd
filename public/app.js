@@ -3,7 +3,8 @@
 
   // ---------------------------------------------------------------
   // Datos de la iglesia. Cambia aquí los horarios y la dirección.
-  // Horas en formato 24 h ("09:15", "11:00"). null = "por confirmar".
+  // day: 0 = domingo, 1 = lunes, ... 3 = miércoles, 5 = viernes, 6 = sábado
+  // Horas en formato 24 h ("09:15", "19:30"). end es opcional. start: null = "por confirmar".
   // ---------------------------------------------------------------
   var SITE = {
     channelId: "UC9wWITRrvU3R1KFU_vNoznQ",
@@ -12,8 +13,10 @@
     mapQuery: "Iglesia Adventista del Séptimo Día, Calle Faris Santiago Interior 7, Las Piedras, PR 00771",
     latLng: "18.18140,-65.86277",
     schedule: [
-      { es: "Escuela Sabática", en: "Sabbath School", time: null },
-      { es: "Culto divino", en: "Worship service", time: null }
+      { day: 3, es: "Oasis", en: "Oasis (midweek service)", start: "19:30", end: "20:30" },
+      { day: 5, es: "Sociedad de Jóvenes", en: "Youth Society", start: "19:30" },
+      { day: 6, es: "Escuela Sabática", en: "Sabbath School", start: "09:15" },
+      { day: 6, es: "Culto", en: "Worship service", start: "11:00" }
     ],
     // Correo guardado al revés y en base64 para que los bots no lo recojan.
     // Para cambiarlo: printf %s "correo@ejemplo.com" | rev | base64
@@ -32,12 +35,12 @@
       "hero.lead": "Cada sábado nos reunimos para estudiar la Biblia, adorar y compartir. Ven en persona o acompáñanos en vivo desde donde estés.",
       "hero.visit": "Cómo llegar", "hero.times": "Ver horarios",
       "live.label": "Transmisión en vivo", "live.tag": "Transmitimos en vivo los sábados", "live.play": "Ver la transmisión",
-      "live.note": "Si en este momento no estamos en vivo, YouTube te enseña la próxima transmisión programada.",
+      "live.note": "Se abre en YouTube. Si en este momento no estamos en vivo, verás la próxima transmisión programada o el canal.",
       "live.open": "Abrir en YouTube", "live.sub": "Suscribirse al canal", "live.latest": "Ver el último servicio",
       "past.title": "Servicios anteriores", "past.all": "Ver todos en YouTube",
       "past.error": "No pudimos cargar los videos ahora mismo. Puedes verlos todos en nuestro canal de YouTube.",
       "past.play": "Ver el servicio del",
-      "times.title": "Horarios", "times.today": "Hoy, ", "times.this": "Este ", "times.tbd": "Hora por confirmar",
+      "times.title": "Horarios", "times.next": "Próximo:", "times.today": "hoy", "times.tomorrow": "mañana", "times.tbd": "Hora por confirmar",
       "visit.title": "Visítanos", "visit.map": "Mostrar el mapa aquí", "visit.mapTitle": "Mapa de la iglesia",
       "contact.title": "Contacto",
       "contact.lead": "Escríbenos si tienes alguna pregunta, quieres que oremos por ti o te gustaría estudiar la Biblia.",
@@ -59,12 +62,12 @@
       "hero.lead": "Every Saturday we meet to study the Bible, worship and spend time together. Join us in person or watch live from wherever you are.",
       "hero.visit": "Get directions", "hero.times": "See service times",
       "live.label": "Live stream", "live.tag": "We stream live every Saturday", "live.play": "Watch the stream",
-      "live.note": "If we're not live right now, YouTube shows the next scheduled stream.",
+      "live.note": "Opens in YouTube. If we're not live right now, you'll see the next scheduled stream or the channel.",
       "live.open": "Open in YouTube", "live.sub": "Subscribe to the channel", "live.latest": "Watch the latest service",
       "past.title": "Past services", "past.all": "See all on YouTube",
       "past.error": "We couldn't load the videos right now. You can watch all of them on our YouTube channel.",
       "past.play": "Watch the service from",
-      "times.title": "Service times", "times.today": "Today, ", "times.this": "This ", "times.tbd": "Time to be confirmed",
+      "times.title": "Service times", "times.next": "Next:", "times.today": "today", "times.tomorrow": "tomorrow", "times.tbd": "Time to be confirmed",
       "visit.title": "Visit us", "visit.map": "Show the map here", "visit.mapTitle": "Map to the church",
       "contact.title": "Contact",
       "contact.lead": "Write to us if you have a question, would like us to pray for you, or want to study the Bible.",
@@ -161,36 +164,77 @@
   function prNow() {
     // Puerto Rico is UTC-4 all year (no daylight saving).
     var d = new Date(Date.now() - 4 * 3600 * 1000);
-    return { y: d.getUTCFullYear(), m: d.getUTCMonth(), d: d.getUTCDate(), wd: d.getUTCDay() };
+    return { y: d.getUTCFullYear(), m: d.getUTCMonth(), d: d.getUTCDate(), wd: d.getUTCDay(), min: d.getUTCHours() * 60 + d.getUTCMinutes() };
   }
   function locale() { return state.lang === "es" ? "es-PR" : "en-US"; }
 
-  function renderTimes() {
-    var n = prNow();
-    var add = (6 - n.wd + 7) % 7;
-    var sat = new Date(Date.UTC(n.y, n.m, n.d + add, 12));
-    var dateStr = new Intl.DateTimeFormat(locale(), { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }).format(sat);
-    var dayOnly = new Intl.DateTimeFormat(locale(), { day: "numeric", month: "long", timeZone: "UTC" }).format(sat);
-    var weekday = new Intl.DateTimeFormat(locale(), { weekday: "long", timeZone: "UTC" }).format(sat);
-    $("next-sabbath").textContent = add === 0
-      ? L("times.today") + dateStr
-      : (state.lang === "es" ? "Este " + weekday + ", " + dayOnly : "This " + cap(weekday) + ", " + dayOnly);
+  function toMin(t) { if (!t || !/^\d{1,2}:\d{2}$/.test(t)) return null; var p = t.split(":"); return +p[0] * 60 + +p[1]; }
+  function clock(min) {
+    return new Intl.DateTimeFormat(locale(), { hour: "numeric", minute: "2-digit", timeZone: "UTC" })
+      .format(new Date(Date.UTC(2000, 0, 1, Math.floor(min / 60), min % 60)));
+  }
+  function clockRange(a, b) {
+    var f = new Intl.DateTimeFormat(locale(), { hour: "numeric", minute: "2-digit", timeZone: "UTC" });
+    var da = new Date(Date.UTC(2000, 0, 1, Math.floor(a / 60), a % 60)), db = new Date(Date.UTC(2000, 0, 1, Math.floor(b / 60), b % 60));
+    return f.formatRange ? f.formatRange(da, db) : f.format(da) + " – " + f.format(db);
+  }
+  function weekdayName(day) {
+    // 2 Jan 2000 was a Sunday
+    return cap(new Intl.DateTimeFormat(locale(), { weekday: "long", timeZone: "UTC" }).format(new Date(Date.UTC(2000, 0, 2 + day, 12))));
+  }
 
-    var dl = $("times");
-    dl.textContent = "";
-    SITE.schedule.forEach(function (s) {
-      var row = document.createElement("div");
-      var dt = document.createElement("dt"); dt.textContent = s[state.lang];
-      var dd = document.createElement("dd");
-      if (s.time && /^\d{1,2}:\d{2}$/.test(s.time)) {
-        var p = s.time.split(":");
-        dd.textContent = new Intl.DateTimeFormat(locale(), { hour: "numeric", minute: "2-digit", timeZone: "UTC" })
-          .format(new Date(Date.UTC(2000, 0, 1, +p[0], +p[1])));
-      } else {
-        dd.textContent = L("times.tbd"); dd.className = "tbd";
-      }
-      row.appendChild(dt); row.appendChild(dd); dl.appendChild(row);
+  function renderTimes() {
+    var list = SITE.schedule.slice().sort(function (a, b) { return a.day - b.day || (toMin(a.start) || 0) - (toMin(b.start) || 0); });
+
+    // the week, grouped by day
+    var box = $("times");
+    box.textContent = "";
+    var days = [];
+    list.forEach(function (s) { if (days.indexOf(s.day) < 0) days.push(s.day); });
+    days.forEach(function (day) {
+      var group = document.createElement("div"); group.className = "day";
+      var name = document.createElement("p"); name.className = "day-name"; name.textContent = weekdayName(day);
+      var dl = document.createElement("dl");
+      list.filter(function (s) { return s.day === day; }).forEach(function (s) {
+        var row = document.createElement("div");
+        var dt = document.createElement("dt"); dt.textContent = s[state.lang];
+        var dd = document.createElement("dd");
+        var a = toMin(s.start), b = toMin(s.end);
+        if (a === null) { dd.textContent = L("times.tbd"); dd.className = "tbd"; }
+        else dd.textContent = b !== null ? clockRange(a, b) : clock(a);
+        row.appendChild(dt); row.appendChild(dd); dl.appendChild(row);
+      });
+      group.appendChild(name); group.appendChild(dl); box.appendChild(group);
     });
+
+    // the next thing coming up, in Puerto Rico time
+    var n = prNow(), next = null, best = Infinity;
+    list.forEach(function (s) {
+      var m = toMin(s.start);
+      if (m === null) return;
+      var ahead = (s.day - n.wd + 7) % 7;
+      if (ahead === 0 && m <= n.min) ahead = 7;
+      var score = ahead * 1440 + m;
+      if (score < best) { best = score; next = { s: s, ahead: ahead, min: m }; }
+    });
+    var p = $("next-event");
+    p.textContent = "";
+    if (!next) { p.hidden = true; return; }
+    p.hidden = false;
+    var k = document.createElement("span"); k.className = "next-k"; k.textContent = L("times.next") + " ";
+    var when;
+    if (next.ahead === 0) when = L("times.today");
+    else if (next.ahead === 1) when = L("times.tomorrow");
+    else {
+      var d = new Date(Date.UTC(n.y, n.m, n.d + next.ahead, 12));
+      var dm = new Intl.DateTimeFormat(locale(), { day: "numeric", month: "long", timeZone: "UTC" }).format(d);
+      var wd = new Intl.DateTimeFormat(locale(), { weekday: "long", timeZone: "UTC" }).format(d);
+      when = state.lang === "es" ? "el " + wd + " " + dm : cap(wd) + ", " + dm;
+    }
+    var hour12 = Math.floor(next.min / 60) % 12 || 12;
+    var at = state.lang === "es" ? (hour12 === 1 ? "a la" : "a las") : "at";
+    p.appendChild(k);
+    p.appendChild(document.createTextNode(next.s[state.lang] + ", " + when + " " + at + " " + clock(next.min)));
   }
 
   function videoDate(iso) {
@@ -214,15 +258,9 @@
   function videoSrc(id) { return "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0"; }
 
   function initLive() {
-    $("yt-live").href = YT + "/live";
+    $("play-live").href = YT + "/live"; // opens the channel's live page in YouTube
     $("yt-sub").href = YT + "?sub_confirmation=1";
     $("yt-all").href = YT + "/streams";
-    $("play-live").addEventListener("click", function () {
-      var p = $("player");
-      p.textContent = "";
-      p.classList.add("playing"); // removes the overlay so taps reach the YouTube player
-      p.appendChild(frame("https://www.youtube.com/embed/live_stream?channel=" + SITE.channelId + "&autoplay=1", L("live.label")));
-    });
     $("play-latest").addEventListener("click", function () {
       if (state.videos && state.videos[0]) openViewer(state.videos[0]);
     });
@@ -338,14 +376,13 @@
     $("map-google").href = "https://www.google.com/maps/search/?api=1&query=" + q;
     $("map-apple").href = "https://maps.apple.com/?q=" + encodeURIComponent("Iglesia Adventista Las Piedras") + "&ll=" + SITE.latLng;
     $("map-waze").href = "https://waze.com/ul?ll=" + SITE.latLng + "&navigate=yes";
-    $("map-load").addEventListener("click", function () {
-      var m = $("map");
-      m.textContent = "";
-      m.classList.add("loaded");
-      var f = frame("https://www.google.com/maps?q=" + q + "&output=embed", L("visit.mapTitle"));
-      f.loading = "lazy";
-      m.appendChild(f);
-    });
+    // the map shows on its own; "lazy" waits until it is close to the screen so the page still opens fast
+    var m = $("map");
+    m.textContent = "";
+    m.classList.add("loaded");
+    var f = frame("https://www.google.com/maps?q=" + q + "&output=embed", L("visit.mapTitle"));
+    f.loading = "lazy";
+    m.appendChild(f);
   }
 
   // ---------- contact ----------

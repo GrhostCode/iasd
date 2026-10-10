@@ -30,14 +30,14 @@ Sigue el manual de identidad adventista de la División Interamericana (2022):
 
 Todo está arriba de `public/app.js`, en el objeto `SITE`:
 
-- **Horarios:** en `schedule`, pon la hora en formato 24 h, por ejemplo `time: "09:15"`. Con `null` sale "Hora por confirmar". Puedes añadir más filas.
+- **Horarios:** en `schedule`. Cada fila tiene el día (`day`: 0 = domingo … 3 = miércoles, 5 = viernes, 6 = sábado), el nombre en `es` y `en`, la hora de inicio `start` en formato 24 h (`"19:30"`) y, si quieres, la hora de terminar `end`. La página arma la semana sola y enseña cuál es la próxima reunión.
 - **Dirección:** `address`, `mapQuery` (lo que se busca en Google Maps) y `latLng` (para Apple Maps y Waze).
 - **Correo:** está guardado al revés y en base64 para que los bots no lo recojan. Para cambiarlo: `printf %s "correo@ejemplo.com" | rev | base64`.
 - **Textos:** en el objeto `T` (una versión `es` y otra `en`). Si cambias un texto, cámbialo en los dos idiomas.
 
 ## Videos
 
-- "Ver la transmisión" abre el directo del canal. Si no hay directo, YouTube enseña la próxima transmisión programada.
+- "Ver la transmisión" abre la página de directo del canal en YouTube.
 - "Servicios anteriores" muestra los últimos 9 videos del canal (sin Shorts). Se actualiza solo, como mucho cada 10 minutos.
 
 ## Publicar
