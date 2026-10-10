@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Iglesia Adventista Las Piedras</title>
+<meta name="description" content="Iglesia Adventista del Séptimo Día en Las Piedras, Puerto Rico. Horarios, cómo llegar y servicios en vivo.">
+<meta name="theme-color" content="#eeeff0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#18191b" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Iglesia Adventista Las Piedras">
+<meta property="og:description" content="Horarios, cómo llegar y servicios en vivo.">
+<meta property="og:image" content="/img/logo-512.png">
+<link rel="icon" href="/img/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&display=swap">
+<link rel="stylesheet" href="/styles.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Saltar al contenido</a>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#inicio">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="brand-name">IASD Las Piedras</span>
+    </a>
+    <nav class="nav" data-i18n-label="nav.label" aria-label="Secciones">
+      <a href="#envivo" data-i18n="nav.live">En vivo</a>
+      <a href="#horarios" data-i18n="nav.times">Horarios</a>
+      <a href="#visitanos" data-i18n="nav.visit">Visítanos</a>
+      <a href="#contacto" data-i18n="nav.contact">Contacto</a>
+    </nav>
+    <div class="settings">
+      <button class="icon-btn" id="set-btn" type="button" aria-expanded="false" aria-controls="set-panel" data-i18n-label="set.open" aria-label="Configuración">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8" cy="17" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      </button>
+      <div class="panel" id="set-panel" role="dialog" aria-labelledby="set-title" hidden>
+        <p class="panel-title" id="set-title" data-i18n="set.title">Configuración</p>
+        <div class="opt" role="group" aria-labelledby="set-lang">
+          <p class="opt-name" id="set-lang" data-i18n="set.lang">Idioma</p>
+          <div class="seg">
+            <button type="button" data-lang="es" aria-pressed="true">Español</button>
+            <button type="button" data-lang="en" aria-pressed="false">English</button>
+          </div>
+        </div>
+        <div class="opt" role="group" aria-labelledby="set-theme">
+          <p class="opt-name" id="set-theme" data-i18n="set.theme">Apariencia</p>
+          <div class="seg">
+            <button type="button" data-theme-opt="auto" aria-pressed="true" data-i18n="set.auto">Automática</button>
+            <button type="button" data-theme-opt="light" aria-pressed="false" data-i18n="set.light">Clara</button>
+            <button type="button" data-theme-opt="dark" aria-pressed="false" data-i18n="set.dark">Oscura</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="inicio">
+    <div class="wrap">
+      <h1 class="name"><span class="name-a">Iglesia Adventista</span> <span class="name-b">Las Piedras</span></h1>
+      <div class="hero-row">
+        <p class="lead" data-i18n="hero.lead">Cada sábado nos reunimos para estudiar la Biblia, adorar y compartir. Ven en persona o acompáñanos en vivo desde donde estés.</p>
+        <div class="actions">
+          <a class="btn primary" href="#visitanos" data-i18n="hero.visit">Cómo llegar</a>
+          <a class="btn" href="#horarios" data-i18n="hero.times">Ver horarios</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="live" id="envivo" data-i18n-label="live.label" aria-label="Transmisión en vivo">
+    <div class="wrap">
+      <div class="player" id="player">
+        <img class="player-bg" id="player-bg" alt="" hidden>
+        <div class="player-ui">
+          <p class="live-tag"><span class="dot" aria-hidden="true"></span><span data-i18n="live.tag">Transmitimos en vivo los sábados</span></p>
+          <button class="play" id="play-live" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13a1 1 0 0 0 1.5.86l10.6-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+            <span data-i18n="live.play">Ver la transmisión</span>
+          </button>
+        </div>
+      </div>
+      <div class="live-meta">
+        <p class="note" data-i18n="live.note">Si en este momento no estamos en vivo, YouTube te enseña la próxima transmisión programada.</p>
+        <div class="live-links">
+          <button class="text-btn" id="play-latest" type="button" hidden></button>
+          <a class="text-link" id="yt-live" href="#" target="_blank" rel="noopener" data-i18n="live.open">Abrir en YouTube</a>
+          <a class="text-link" id="yt-sub" href="#" target="_blank" rel="noopener" data-i18n="live.sub">Suscribirse al canal</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="anteriores">
+    <div class="wrap">
+      <div class="head-row">
+        <h2 data-i18n="past.title">Servicios anteriores</h2>
+        <a class="text-link" id="yt-all" href="#" target="_blank" rel="noopener" data-i18n="past.all">Ver todos en YouTube</a>
+      </div>
+      <ul class="videos" id="videos" aria-busy="true"></ul>
+      <p class="note" id="videos-error" hidden data-i18n="past.error">No pudimos cargar los videos ahora mismo. Puedes verlos todos en nuestro canal de YouTube.</p>
+    </div>
+  </section>
+
+  <section class="block info">
+    <div class="wrap info-in">
+      <div class="info-col" id="horarios">
+        <h2 data-i18n="times.title">Horarios</h2>
+        <p class="next" id="next-sabbath"></p>
+        <dl class="times" id="times"></dl>
+      </div>
+      <div class="info-col" id="visitanos">
+        <h2 data-i18n="visit.title">Visítanos</h2>
+        <address class="addr" id="addr"></address>
+        <div class="chips">
+          <a class="chip" id="map-google" href="#" target="_blank" rel="noopener">Google Maps</a>
+          <a class="chip" id="map-apple" href="#" target="_blank" rel="noopener">Apple Maps</a>
+          <a class="chip" id="map-waze" href="#" target="_blank" rel="noopener">Waze</a>
+        </div>
+        <div class="map" id="map">
+          <button class="text-btn" id="map-load" type="button" data-i18n="visit.map">Mostrar el mapa aquí</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block contact" id="contacto">
+    <div class="wrap">
+      <h2 data-i18n="contact.title">Contacto</h2>
+      <p class="lead" data-i18n="contact.lead">Escríbenos si tienes alguna pregunta, quieres que oremos por ti o te gustaría estudiar la Biblia.</p>
+      <a class="email" id="email" href="#contacto">…</a>
+      <div class="actions">
+        <a class="btn" id="mail-pray" href="#contacto" data-i18n="contact.pray">Pedir oración</a>
+        <a class="btn" id="mail-study" href="#contacto" data-i18n="contact.study">Quiero estudiar la Biblia</a>
+        <button class="btn" id="copy-email" type="button" data-i18n="contact.copy">Copiar correo</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <p>© <span id="year">2026</span> <span data-i18n="foot.name">Iglesia Adventista del Séptimo Día de Las Piedras</span></p>
+    <button class="text-btn" id="share" type="button" data-i18n="foot.share">Compartir esta página</button>
+  </div>
+</footer>
+
+<dialog class="viewer" id="viewer" data-i18n-label="viewer.label" aria-label="Video">
+  <div class="viewer-in">
+    <button class="close" id="viewer-close" type="button" data-i18n="viewer.close">Cerrar</button>
+    <div class="viewer-frame" id="viewer-frame"></div>
+  </div>
+</dialog>
+</body>
+</html>
