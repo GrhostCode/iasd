@@ -44,7 +44,7 @@
       "visit.title": "Visítanos", "visit.map": "Mostrar el mapa aquí", "visit.mapTitle": "Mapa de la iglesia",
       "contact.title": "Contacto",
       "contact.lead": "Escríbenos si tienes alguna pregunta, quieres que oremos por ti o te gustaría estudiar la Biblia.",
-      "contact.pray": "Pedir oración", "contact.study": "Quiero estudiar la Biblia", "contact.copy": "Copiar correo", "contact.copied": "Correo copiado",
+      "contact.pray": "Pedir oración", "contact.study": "Quiero estudiar la Biblia", "contact.copy": "Copiar correo", "contact.copied": "Correo copiado", "verse.title": "Versículo de hoy",
       "mail.praySubject": "Petición de oración",
       "mail.prayBody": "Hola, me gustaría que oren por:\n\n",
       "mail.studySubject": "Quiero estudiar la Biblia",
@@ -71,7 +71,7 @@
       "visit.title": "Visit us", "visit.map": "Show the map here", "visit.mapTitle": "Map to the church",
       "contact.title": "Contact",
       "contact.lead": "Write to us if you have a question, would like us to pray for you, or want to study the Bible.",
-      "contact.pray": "Ask for prayer", "contact.study": "I want to study the Bible", "contact.copy": "Copy email", "contact.copied": "Email copied",
+      "contact.pray": "Ask for prayer", "contact.study": "I want to study the Bible", "contact.copy": "Copy email", "contact.copied": "Email copied", "verse.title": "Verse of the day",
       "mail.praySubject": "Prayer request",
       "mail.prayBody": "Hi, I'd like you to pray for:\n\n",
       "mail.studySubject": "Bible study request",
@@ -125,6 +125,7 @@
     renderTimes();
     renderMail();
     renderVideos();
+    renderVerse();
   }
 
   // ---------- theme ----------
@@ -420,6 +421,45 @@
       if (navigator.share) { navigator.share({ title: document.title, url: url }).catch(function () {}); return; }
       copy(url).then(function () { flash(b, "foot.shared", "foot.share"); }, function () {});
     });
+  }
+  // ---------- verse of the day ----------
+  var VERSES = [
+    { book: "jo", ch: 3, v: 16, es: "Juan 3:16", en: "John 3:16" },
+    { book: "ps", ch: 23, v: 1, es: "Salmos 23:1", en: "Psalm 23:1" },
+    { book: "ph", ch: 4, v: 13, es: "Filipenses 4:13", en: "Philippians 4:13" },
+    { book: "prv", ch: 3, v: 5, es: "Proverbios 3:5", en: "Proverbs 3:5" },
+    { book: "is", ch: 41, v: 10, es: "Isaías 41:10", en: "Isaiah 41:10" },
+    { book: "rm", ch: 8, v: 28, es: "Romanos 8:28", en: "Romans 8:28" },
+    { book: "mt", ch: 11, v: 28, es: "Mateo 11:28", en: "Matthew 11:28" },
+    { book: "jr", ch: 29, v: 11, es: "Jeremías 29:11", en: "Jeremiah 29:11" },
+    { book: "2co", ch: 5, v: 17, es: "2 Corintios 5:17", en: "2 Corinthians 5:17" },
+    { book: "js", ch: 1, v: 9, es: "Josué 1:9", en: "Joshua 1:9" }
+    // book codes come from the repo (ps, prv, js, ph...), not from Spanish abbreviations
+  ];
+  var BIBLE = "https://raw.githubusercontent.com/maatheusgois/bible/main/versions/";
+  var VERSIONS = { es: "es/rvr", en: "en/kjv" };
+
+  function todaysVerse() {
+    var now = new Date();
+    var dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+    return VERSES[dayOfYear % VERSES.length]; // % wraps around the list
+  }
+
+  function renderVerse() {
+    var v = todaysVerse();
+    var url = BIBLE + VERSIONS[state.lang] + "/" + v.book + "/" + v.ch + "/" + v.v + ".json";
+    fetch(url)
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (text) {
+        // the English text has {italic} markers and sometimes a "[A Psalm of David.]" heading
+        text = String(text).replace(/[{}]/g, "").replace(/^\[[^\]]*\]\s*/, "").trim();
+        $("verse-text").textContent = "“" + text + "”";
+        $("verse-ref").textContent = v[state.lang];
+      })
+      .catch(function () {
+        $("verse-text").textContent = "";
+        $("verse-ref").textContent = "";
+      });
   }
 
   // ---------- start ----------

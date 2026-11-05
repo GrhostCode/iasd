@@ -230,6 +230,7 @@ button { font: inherit; color: inherit; }
 .contact { background: var(--surface); }
 .contact h2 { margin-bottom: 14px; }
 .contact .lead { margin: 0 0 26px; }
+.contact .actions + h2 { margin-top: 48px; }
 .email {
   display: inline-block; font-size: clamp(1.45rem, 4.6vw, 3rem); font-weight: 700; font-stretch: 87.5%;
   text-decoration: none; overflow-wrap: anywhere; margin-bottom: 26px; line-height: 1.1; color: var(--accent);
@@ -256,3 +257,6 @@ button { font: inherit; color: inherit; }
 .viewer-frame { position: relative; aspect-ratio: 16 / 9; border-radius: var(--r); overflow: hidden; background: #000; }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+.verse { margin: 12px 0 6px; font-size: 1.25rem; font-style: italic; }
+.verse-ref { margin: 0; font-weight: 600; }
